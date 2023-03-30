@@ -1,0 +1,19 @@
+value := reflect.ValueOf(citiesResponse.Data)
+	if value.Kind() != reflect.Slice {
+		citiesResponse.Data = []echo.Map{}
+		return citiesResponse.ToAPIResponse(), nil
+	}
+
+	data := make([]model.CityEntity, value.Len())
+	for i := 0; i < value.Len(); i++ {
+	mapData := value.Index(i).Interface().(map[string]interface{})
+	if code, ok := mapData["city_code"].(float64); ok {
+		data[i].Code = int(code)
+	}
+	if proviceCode, ok := mapData["province_code"].(float64); ok {
+		data[i].ProvinceCode = int(proviceCode)
+	}
+	if name, ok := mapData["city_name"].(string); ok {
+		data[i].Name = name
+	}
+	}
